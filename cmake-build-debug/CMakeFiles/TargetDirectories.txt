@@ -1,0 +1,3 @@
+C:/Users/dluze/CLionProjects/Szachy_cpp/cmake-build-debug/CMakeFiles/Szachy_cpp.dir
+C:/Users/dluze/CLionProjects/Szachy_cpp/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/dluze/CLionProjects/Szachy_cpp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
