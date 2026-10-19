@@ -2,6 +2,11 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cmath>
+
+#ifndef IMAGES_DIR
+#define IMAGES_DIR "images"
+#endif
 
 enum Piece { EMPTY, W_PAWN, W_KNIGHT, W_BISHOP, W_ROOK, W_QUEEN, W_KING, B_PAWN, B_KNIGHT, B_BISHOP, B_ROOK, B_QUEEN, B_KING };
 
@@ -52,112 +57,40 @@ std::vector<int> select(std::vector<std::vector<sf::RectangleShape>>& chessboard
     return index;
 }
 
+// Texture file for each piece code (index = Piece enum value).
+const char* PIECE_FILES[] = {nullptr, "wp", "wh", "wb", "wr", "wq", "wk",
+                                      "bp", "bh", "bb", "br", "bq", "bk"};
+
+// Textures are loaded once at startup instead of on every frame.
+std::vector<sf::Texture> pieceTextures(13);
+
+bool loadTextures(const std::string& dir) {
+    for (int p = W_PAWN; p <= B_KING; p++) {
+        std::string path = dir + "/" + PIECE_FILES[p] + ".png";
+        if (!pieceTextures[p].loadFromFile(path)) {
+            std::cerr << "Could not load " << path << std::endl;
+            return false;
+        }
+        pieceTextures[p].setSmooth(true);
+    }
+    return true;
+}
+
 void displayPieces(sf::RenderWindow& window) {
+    sf::RectangleShape shape(sf::Vector2f(tileSize, tileSize));
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            if (pieces[j][i] == 7) {
-                sf::Texture blackPawnTxt;
-                blackPawnTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/bp.png");
-                sf::RectangleShape blackPawn(sf::Vector2f(tileSize, tileSize));
-                blackPawn.setTexture(&blackPawnTxt);
-                blackPawn.setPosition(i * tileSize, j * tileSize);
-                blackPawn.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(blackPawn);
-            } else if (pieces[j][i] == 10) {
-                sf::Texture blackRookTxt;
-                blackRookTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/br.png");
-                sf::RectangleShape blackRook(sf::Vector2f(tileSize, tileSize));
-                blackRook.setTexture(&blackRookTxt);
-                blackRook.setPosition(i * tileSize, j * tileSize);
-                blackRook.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(blackRook);
-            } else if (pieces[j][i] == 8) {
-                sf::Texture blackKnightTxt;
-                blackKnightTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/bh.png");
-                sf::RectangleShape blackKnight(sf::Vector2f(tileSize, tileSize));
-                blackKnight.setTexture(&blackKnightTxt);
-                blackKnight.setPosition(i * tileSize, j * tileSize);
-                blackKnight.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(blackKnight);
-            } else if (pieces[j][i] == 9) {
-                sf::Texture blackBishopTxt;
-                blackBishopTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/bb.png");
-                sf::RectangleShape blackBishop(sf::Vector2f(tileSize, tileSize));
-                blackBishop.setTexture(&blackBishopTxt);
-                blackBishop.setPosition(i * tileSize, j * tileSize);
-                blackBishop.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(blackBishop);
-            } else if (pieces[j][i] == 11) {
-                sf::Texture blackQueenTxt;
-                blackQueenTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/bq.png");
-                sf::RectangleShape blackQueen(sf::Vector2f(tileSize, tileSize));
-                blackQueen.setTexture(&blackQueenTxt);
-                blackQueen.setPosition(i * tileSize, j * tileSize);
-                blackQueen.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(blackQueen);
-            } else if (pieces[j][i] == 12) {
-                sf::Texture blackKingTxt;
-                blackKingTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/bk.png");
-                sf::RectangleShape blackKing(sf::Vector2f(tileSize, tileSize));
-                blackKing.setTexture(&blackKingTxt);
-                blackKing.setPosition(i * tileSize, j * tileSize);
-                blackKing.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(blackKing);
-            } else if (pieces[j][i] == 1) {
-                sf::Texture whitePawnTxt;
-                whitePawnTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/wp.png");
-                sf::RectangleShape whitePawn(sf::Vector2f(tileSize, tileSize));
-                whitePawn.setTexture(&whitePawnTxt);
-                whitePawn.setPosition(i * tileSize, j * tileSize);
-                whitePawn.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(whitePawn);
-            } else if (pieces[j][i] == 4) {
-                sf::Texture whiteRookTxt;
-                whiteRookTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/wr.png");
-                sf::RectangleShape whiteRook(sf::Vector2f(tileSize, tileSize));
-                whiteRook.setTexture(&whiteRookTxt);
-                whiteRook.setPosition(i * tileSize, j * tileSize);
-                whiteRook.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(whiteRook);
-            } else if (pieces[j][i] == 2) {
-                sf::Texture whiteKnightTxt;
-                whiteKnightTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/wh.png");
-                sf::RectangleShape whiteKnight(sf::Vector2f(tileSize, tileSize));
-                whiteKnight.setTexture(&whiteKnightTxt);
-                whiteKnight.setPosition(i * tileSize, j * tileSize);
-                whiteKnight.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(whiteKnight);
-            } else if (pieces[j][i] == 3) {
-                sf::Texture whiteBishopTxt;
-                whiteBishopTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/wb.png");
-                sf::RectangleShape whiteBishop(sf::Vector2f(tileSize, tileSize));
-                whiteBishop.setTexture(&whiteBishopTxt);
-                whiteBishop.setPosition(i * tileSize, j * tileSize);
-                whiteBishop.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(whiteBishop);
-            } else if (pieces[j][i] == 5) {
-                sf::Texture whiteQueenTxt;
-                whiteQueenTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/wq.png");
-                sf::RectangleShape whiteQueen(sf::Vector2f(tileSize, tileSize));
-                whiteQueen.setTexture(&whiteQueenTxt);
-                whiteQueen.setPosition(i * tileSize, j * tileSize);
-                whiteQueen.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(whiteQueen);
-            } else if (pieces[j][i] == 6) {
-                sf::Texture whiteKingTxt;
-                whiteKingTxt.loadFromFile("C:/Users/dluze/CLionProjects/helloSFML/images/wk.png");
-                sf::RectangleShape whiteKing(sf::Vector2f(tileSize, tileSize));
-                whiteKing.setTexture(&whiteKingTxt);
-                whiteKing.setPosition(i * tileSize, j * tileSize);
-                whiteKing.scale(tileSize / tileSize, tileSize / tileSize);
-                window.draw(whiteKing);
-            }
+            int p = pieces[j][i];
+            if (p == EMPTY) continue;
+            shape.setTexture(&pieceTextures[p], true);
+            shape.setPosition(i * tileSize, j * tileSize);
+            window.draw(shape);
         }
     }
 }
 
 void move_piece(std::vector<std::vector<int>>& board, int src_x, int src_y, int dest_x, int dest_y) {
-    if (std::abs(src_x - 3.5) > 3.5 && std::abs(src_y - 3.5) > 3.5 && std::abs(dest_x - 3.5) > 3.5 && std::abs(dest_x - 3.5) > 3.5) return;
+    if (std::abs(src_x - 3.5) > 3.5 || std::abs(src_y - 3.5) > 3.5 || std::abs(dest_x - 3.5) > 3.5 || std::abs(dest_y - 3.5) > 3.5) return;
     if (board[src_y][src_x] == 0) return;
 
     int moving_piece = board[src_y][src_x];
@@ -206,7 +139,7 @@ bool check_valid_castle(std::vector<std::vector<int>>& board, const std::string&
                 }
             }
         } else {
-            if (board[7][0] == 10) {
+            if (board[0][0] == 10) {
                 if (board[0][3] == 0 && board[0][2] == 0 && board[0][1] == 0) {
                     board[0][2] = 12;
                     board[0][3] = 10;
@@ -221,7 +154,7 @@ bool check_valid_castle(std::vector<std::vector<int>>& board, const std::string&
 }
 
 bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int src_y, int dest_x, int dest_y, bool w_turn) {
-    if (w_turn && board[src_y][src_x] == 1) { //Sprawdzanie dla pionk體
+    if (w_turn && board[src_y][src_x] == 1) { //Sprawdzanie dla pionk贸w
         if (dest_x == src_x) {
             if (dest_y == src_y - 1) {
                 if (board[dest_y][dest_x] == 0) {
@@ -263,7 +196,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
             }
         }
         return false;
-    } else if (w_turn && board[src_y][src_x] == 4) { //Sprawdzanie dla wie縴
+    } else if (w_turn && board[src_y][src_x] == 4) { //Sprawdzanie dla wie偶y
         if (dest_x == src_x) {
             if (dest_y < src_y) {
                 if (board[dest_y][dest_x] > 6 || board[dest_y][dest_x] == 0) {
@@ -373,7 +306,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
             if (dest_x == src_x - 2 && dest_y == src_y + 1) return true;
             if (dest_x == src_x - 1 && dest_y == src_y + 2) return true;
         }
-    } else if (w_turn && board[src_y][src_x] == 3) { //Sprawdzanie dla go馽體
+    } else if (w_turn && board[src_y][src_x] == 3) { //Sprawdzanie dla go艅c贸w
         if (board[dest_y][dest_x] > 6 || board[dest_y][dest_x] == 0) {
             for (int i = 0; i < 8; i++) {
                 if (dest_x == src_x + i && dest_y == src_y + i) {
@@ -441,7 +374,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
                 }
             }
         }
-    } else if (w_turn && board[src_y][src_x] == 6) { //Sprawdzanie dla kr髄體
+    } else if (w_turn && board[src_y][src_x] == 6) { //Sprawdzanie dla kr贸l贸w
         if (board[dest_y][dest_x] > 6 || board[dest_y][dest_x] == 0) {
             if (dest_x == src_x + 1 && (dest_y == src_y + 1 || dest_y == src_y || dest_y == src_y - 1)) {
                 w_king_moved = true;
@@ -477,7 +410,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
             }
             return false;
         }
-    } else if (w_turn && board[src_y][src_x] == 5) { //Sprawdzanie dla bia砮j kr髄owej
+    } else if (w_turn && board[src_y][src_x] == 5) { //Sprawdzanie dla bia艂ej kr贸lowej
         if (board[dest_y][dest_x] > 6 || board[dest_y][dest_x] == 0) {
             for (int i = 0; i < 8; i++) {
                 if (dest_x == src_x + i && dest_y == src_y + i) {
@@ -553,7 +486,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
                 }
             }
         }
-    } else if (!w_turn && board[src_y][src_x] == 11) { //Sprawdzanie dla czarnej kr髄owej
+    } else if (!w_turn && board[src_y][src_x] == 11) { //Sprawdzanie dla czarnej kr贸lowej
         if (board[dest_y][dest_x] < 7) {
             for (int i = 0; i < 8; i++) {
                 if (dest_x == src_x + i && dest_y == src_y + i) {
@@ -634,16 +567,16 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
 }
 
 bool is_en_passant(std::vector<std::vector<int>>& board, int src_x, int src_y, int dest_x, int dest_y) {
-    if (board[dest_y][dest_x] == 1) { //Sprawdzanie dla pionk體
+    if (board[dest_y][dest_x] == 1) { //Sprawdzanie dla pionk贸w
         if (src_y == 3 && (last_src_x == src_x + 1 || last_src_x == src_x - 1 && last_dest_y == src_y &&
                                                       board[last_dest_y][last_dest_x] == 7)) {
-            std::cout << "To by硂 en passant" << std::endl;
+            std::cout << "To by艂o en passant" << std::endl;
             return true;
         }
     } else if (board[dest_y][dest_x] == 7) {
         if (src_y == 4 && (last_src_x == src_x + 1 || last_src_x == src_x - 1 && last_dest_y == src_y &&
                                                       board[last_dest_y][last_dest_x] == 1)) {
-            std::cout << "To by硂 en passant" << std::endl;
+            std::cout << "To by艂o en passant" << std::endl;
             return true;
         }
     }
@@ -663,7 +596,7 @@ bool is_white_checked(std::vector<std::vector<int>>& board) {
         }
     }
 
-    for (int x = 1; x < (7 - pos_x) + 1; x++) { // Sprawdzanie czy na wertykalnych liniach jest kr髄owa lub wie縜
+    for (int x = 1; x < (7 - pos_x) + 1; x++) { // Sprawdzanie czy na wertykalnych liniach jest kr贸lowa lub wie偶a
         if (board[pos_y][pos_x + x] == 0){
             continue;
         } else if (board[pos_y][pos_x + x] == 10 || board[pos_y][pos_x + x] == 11) {
@@ -703,7 +636,7 @@ bool is_white_checked(std::vector<std::vector<int>>& board) {
         }
     }
 
-    if (7 - pos_x == std::min(7 - pos_x, pos_y)) { // Sprawdzanie czy na przek箃nych jest kr髄owa lub goniec
+    if (7 - pos_x == std::min(7 - pos_x, pos_y)) { // Sprawdzanie czy na przek膮tnych jest kr贸lowa lub goniec
         for (int i = 1; i < (7 - pos_x) + 1; i++) {
             if (board[pos_y - i][pos_x + i] == 0){
                 continue;
@@ -790,7 +723,7 @@ bool is_white_checked(std::vector<std::vector<int>>& board) {
             }
         }
     }
-    // Sprawdzenie czy nie ma konia na oko硂
+    // Sprawdzenie czy nie ma konia na oko艂o
     if ((pos_x - 2 >= 0 && pos_y + 1 < 8 && board[pos_y + 1][pos_x - 2] == 8) ||
         (pos_x - 2 >= 0 && pos_y - 1 >= 0 && board[pos_y - 1][pos_x - 2] == 8) ||
         (pos_x + 2 < 8 && pos_y + 1 < 8 && board[pos_y + 1][pos_x + 2] == 8) ||
@@ -802,7 +735,7 @@ bool is_white_checked(std::vector<std::vector<int>>& board) {
         return true;
     }
 
-    if (board[pos_y - 1][pos_x + 1] == 7) { // Sprawdzenie czy nie ma atakuj筩ego piona
+    if (board[pos_y - 1][pos_x + 1] == 7) { // Sprawdzenie czy nie ma atakuj膮cego piona
         return true;
     } else if (board[pos_y - 1][pos_x - 1] == 7) {
         return true;
@@ -824,7 +757,7 @@ bool is_black_checked(std::vector<std::vector<int>>& board) {
         }
     }
 
-    for (int x = 1; x < (7 - pos_x) + 1; x++) { // Sprawdzanie czy na wertykalnych i horyzontalnych liniach jest kr髄owa lub wie縜
+    for (int x = 1; x < (7 - pos_x) + 1; x++) { // Sprawdzanie czy na wertykalnych i horyzontalnych liniach jest kr贸lowa lub wie偶a
         if (board[pos_y][pos_x + x] == 0){
             continue;
         } else if (board[pos_y][pos_x + x] == 4 || board[pos_y][pos_x + x] == 5) {
@@ -864,7 +797,7 @@ bool is_black_checked(std::vector<std::vector<int>>& board) {
         }
     }
 
-    if (7 - pos_x == std::min(7 - pos_x, pos_y)) { // Sprawdzanie czy na przek箃nych jest kr髄owa lub goniec
+    if (7 - pos_x == std::min(7 - pos_x, pos_y)) { // Sprawdzanie czy na przek膮tnych jest kr贸lowa lub goniec
         for (int i = 1; i < (7 - pos_x) + 1; i++) {
             if (board[pos_y - i][pos_x + i] == 0){
                 continue;
@@ -1028,7 +961,12 @@ void draw(sf::RenderWindow& window, std::vector<std::vector<sf::RectangleShape>>
 
 int main()
 {
-    sf:: RenderWindow window(sf::VideoMode(tileSize * 8, tileSize * 8), "Chess", sf::Style::Close | sf::Style::Resize);
+    if (!loadTextures(IMAGES_DIR)) {
+        return 1;
+    }
+
+    sf::RenderWindow window(sf::VideoMode(tileSize * 8, tileSize * 8), "Chess", sf::Style::Close | sf::Style::Resize);
+    window.setFramerateLimit(60);
     std::vector<std::vector<sf::RectangleShape>> chessboard;
 
     initialize(chessboard);
