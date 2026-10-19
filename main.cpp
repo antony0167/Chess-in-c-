@@ -154,7 +154,7 @@ bool check_valid_castle(std::vector<std::vector<int>>& board, const std::string&
 }
 
 bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int src_y, int dest_x, int dest_y, bool w_turn) {
-    if (w_turn && board[src_y][src_x] == 1) { //Sprawdzanie dla pionków
+    if (w_turn && board[src_y][src_x] == 1) { // Pawns
         if (dest_x == src_x) {
             if (dest_y == src_y - 1) {
                 if (board[dest_y][dest_x] == 0) {
@@ -196,7 +196,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
             }
         }
         return false;
-    } else if (w_turn && board[src_y][src_x] == 4) { //Sprawdzanie dla wieży
+    } else if (w_turn && board[src_y][src_x] == 4) { // Rooks
         if (dest_x == src_x) {
             if (dest_y < src_y) {
                 if (board[dest_y][dest_x] > 6 || board[dest_y][dest_x] == 0) {
@@ -284,7 +284,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
                 }
             }
         }
-    } else if (w_turn && board[src_y][src_x] == 2) { //Sprawdzanie dla koni
+    } else if (w_turn && board[src_y][src_x] == 2) { // Knights
         if (board[dest_y][dest_x] == 0 || board[dest_y][dest_x] > 6) {
             if (dest_x == src_x + 1 && dest_y == src_y + 2) return true;
             if (dest_x == src_x + 2 && dest_y == src_y + 1)  return true;
@@ -306,7 +306,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
             if (dest_x == src_x - 2 && dest_y == src_y + 1) return true;
             if (dest_x == src_x - 1 && dest_y == src_y + 2) return true;
         }
-    } else if (w_turn && board[src_y][src_x] == 3) { //Sprawdzanie dla gońców
+    } else if (w_turn && board[src_y][src_x] == 3) { // Bishops
         if (board[dest_y][dest_x] > 6 || board[dest_y][dest_x] == 0) {
             for (int i = 0; i < 8; i++) {
                 if (dest_x == src_x + i && dest_y == src_y + i) {
@@ -374,7 +374,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
                 }
             }
         }
-    } else if (w_turn && board[src_y][src_x] == 6) { //Sprawdzanie dla królów
+    } else if (w_turn && board[src_y][src_x] == 6) { // Kings
         if (board[dest_y][dest_x] > 6 || board[dest_y][dest_x] == 0) {
             if (dest_x == src_x + 1 && (dest_y == src_y + 1 || dest_y == src_y || dest_y == src_y - 1)) {
                 w_king_moved = true;
@@ -410,7 +410,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
             }
             return false;
         }
-    } else if (w_turn && board[src_y][src_x] == 5) { //Sprawdzanie dla białej królowej
+    } else if (w_turn && board[src_y][src_x] == 5) { // White queen
         if (board[dest_y][dest_x] > 6 || board[dest_y][dest_x] == 0) {
             for (int i = 0; i < 8; i++) {
                 if (dest_x == src_x + i && dest_y == src_y + i) {
@@ -486,7 +486,7 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
                 }
             }
         }
-    } else if (!w_turn && board[src_y][src_x] == 11) { //Sprawdzanie dla czarnej królowej
+    } else if (!w_turn && board[src_y][src_x] == 11) { // Black queen
         if (board[dest_y][dest_x] < 7) {
             for (int i = 0; i < 8; i++) {
                 if (dest_x == src_x + i && dest_y == src_y + i) {
@@ -567,16 +567,16 @@ bool check_valid_move(const std::vector<std::vector<int>>& board, int src_x, int
 }
 
 bool is_en_passant(std::vector<std::vector<int>>& board, int src_x, int src_y, int dest_x, int dest_y) {
-    if (board[dest_y][dest_x] == 1) { //Sprawdzanie dla pionków
+    if (board[dest_y][dest_x] == 1) { // Pawns
         if (src_y == 3 && (last_src_x == src_x + 1 || last_src_x == src_x - 1 && last_dest_y == src_y &&
                                                       board[last_dest_y][last_dest_x] == 7)) {
-            std::cout << "To było en passant" << std::endl;
+            std::cout << "En passant" << std::endl;
             return true;
         }
     } else if (board[dest_y][dest_x] == 7) {
         if (src_y == 4 && (last_src_x == src_x + 1 || last_src_x == src_x - 1 && last_dest_y == src_y &&
                                                       board[last_dest_y][last_dest_x] == 1)) {
-            std::cout << "To było en passant" << std::endl;
+            std::cout << "En passant" << std::endl;
             return true;
         }
     }
@@ -596,7 +596,7 @@ bool is_white_checked(std::vector<std::vector<int>>& board) {
         }
     }
 
-    for (int x = 1; x < (7 - pos_x) + 1; x++) { // Sprawdzanie czy na wertykalnych liniach jest królowa lub wieża
+    for (int x = 1; x < (7 - pos_x) + 1; x++) { // Is there a queen or rook on the same rank or file?
         if (board[pos_y][pos_x + x] == 0){
             continue;
         } else if (board[pos_y][pos_x + x] == 10 || board[pos_y][pos_x + x] == 11) {
@@ -636,7 +636,7 @@ bool is_white_checked(std::vector<std::vector<int>>& board) {
         }
     }
 
-    if (7 - pos_x == std::min(7 - pos_x, pos_y)) { // Sprawdzanie czy na przekątnych jest królowa lub goniec
+    if (7 - pos_x == std::min(7 - pos_x, pos_y)) { // Is there a queen or bishop on a diagonal?
         for (int i = 1; i < (7 - pos_x) + 1; i++) {
             if (board[pos_y - i][pos_x + i] == 0){
                 continue;
@@ -723,7 +723,7 @@ bool is_white_checked(std::vector<std::vector<int>>& board) {
             }
         }
     }
-    // Sprawdzenie czy nie ma konia na około
+    // Is the king attacked by a knight?
     if ((pos_x - 2 >= 0 && pos_y + 1 < 8 && board[pos_y + 1][pos_x - 2] == 8) ||
         (pos_x - 2 >= 0 && pos_y - 1 >= 0 && board[pos_y - 1][pos_x - 2] == 8) ||
         (pos_x + 2 < 8 && pos_y + 1 < 8 && board[pos_y + 1][pos_x + 2] == 8) ||
@@ -735,7 +735,7 @@ bool is_white_checked(std::vector<std::vector<int>>& board) {
         return true;
     }
 
-    if (board[pos_y - 1][pos_x + 1] == 7) { // Sprawdzenie czy nie ma atakującego piona
+    if (board[pos_y - 1][pos_x + 1] == 7) { // Is the king attacked by a pawn?
         return true;
     } else if (board[pos_y - 1][pos_x - 1] == 7) {
         return true;
@@ -757,7 +757,7 @@ bool is_black_checked(std::vector<std::vector<int>>& board) {
         }
     }
 
-    for (int x = 1; x < (7 - pos_x) + 1; x++) { // Sprawdzanie czy na wertykalnych i horyzontalnych liniach jest królowa lub wieża
+    for (int x = 1; x < (7 - pos_x) + 1; x++) { // Is there a queen or rook on the same rank or file?
         if (board[pos_y][pos_x + x] == 0){
             continue;
         } else if (board[pos_y][pos_x + x] == 4 || board[pos_y][pos_x + x] == 5) {
@@ -797,7 +797,7 @@ bool is_black_checked(std::vector<std::vector<int>>& board) {
         }
     }
 
-    if (7 - pos_x == std::min(7 - pos_x, pos_y)) { // Sprawdzanie czy na przekątnych jest królowa lub goniec
+    if (7 - pos_x == std::min(7 - pos_x, pos_y)) { // Is there a queen or bishop on a diagonal?
         for (int i = 1; i < (7 - pos_x) + 1; i++) {
             if (board[pos_y - i][pos_x + i] == 0){
                 continue;
